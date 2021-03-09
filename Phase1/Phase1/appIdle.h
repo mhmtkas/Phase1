@@ -5,6 +5,9 @@
 #include <winsock2.h>
 #include <ostream>
 
+#pragma comment(lib, "Ws2_32.lib")
+
+
 
 
 void appIdleLoop(const unsigned char* cashierName);
