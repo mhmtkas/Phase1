@@ -108,7 +108,7 @@ int CashierDb::selectCashierPswValue(int cashierNo)    //selecting password valu
 int* CashierDb::selectCashierIdValues()    //selecting all ýd values to check user login
 {
 	sqlite3_prepare_v2(db, "SELECT cashierId FROM cashier", -1, &stmt, 0);
-	int cashierID,valueCount;
+	int cashierID;
 	valueCount = lineCount();
 	static int cashierIdArr[10];
 	int i = 0;
@@ -187,8 +187,19 @@ int CashierDb::checkCashierLogin()   //the function that checking user login suc
 	}
 	
 	p = selectCashierIdValues(); //taking all id values from cashregister.db
-	
-	for (int i = 0; i < sizeof(*p) + 1; i++)
+
+	int j = 0;
+	int elementNumber = 0;
+	while (true)
+	{
+		if (*(p + j) != NULL)
+			elementNumber += 1;
+		else
+			break;
+		j++;
+	}
+
+	for (int i = 0; i < elementNumber; i++)
 	{
 		if (cashierNoInput == *(p + i))
 		{

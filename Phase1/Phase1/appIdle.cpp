@@ -20,21 +20,30 @@ int transferToServer()
 
 	sock = socket(AF_INET, SOCK_STREAM, 0); // creating socket
 	if (sock == -1){cout << "Can't create socket!" << endl;return 0;}
-
-	int connectRes = connect(sock, (sockaddr*)&addr, sizeof(addr)); // connecting to server
-	if (connectRes == -1){return 0;}
-
-	string hello = "merhaba\n";
-	char buf[4096];
-	int sendRes = send(sock, hello.c_str(), hello.size() + 1, 0);  //sending 'hello' message
-	if (sendRes == -1) { cout << "Could not send to server! Whoops!\r\n"; return 0; }
 	
-	int bytesReceived = recv(sock, buf, 4096, 0); // coming message from server as response
-	
-	cout << (string(buf, 0, bytesReceived)) << endl; // writing message that came from server to consoler
+		int connectRes = connect(sock, (sockaddr*)&addr, sizeof(addr)); // connecting to server
+		if (connectRes == -1){return 0;}
+	while (sock)
+	{
+			string helloMsg;
+			cin >> helloMsg; // enter 'exit' to quit 
+			helloMsg = helloMsg + '\n';
+			char buf[4096];
+			int sendRes = send(sock, helloMsg.c_str(), helloMsg.size() + 1, 0);  //sending input message 
+			if (sendRes == -1) { cout << "Could not send to server! Whoops!\r\n"; return 0; }
 
+			int bytesReceived = recv(sock, buf, 4096, 0); // coming message from server as response
+
+			if (bytesReceived == -1 || bytesReceived == 0)
+			{
+				cout << "Server Disconnected." << endl;
+				return 0;
+			}
+			cout << (string(buf, 0, bytesReceived)) << endl; // writing message that came from server to consoler
+	}
+	cout << "Server Disconnected.";
+	return 0;
 }
-
 
 void appIdleLoop(const unsigned char* cashierName)
 {
@@ -61,10 +70,12 @@ checkPoint:
 	if (choiceIdleLoop == 1)
 	{
 		cout << "Henuz kayit yok." << endl;
+		goto checkPoint;
 	}
 	else if (choiceIdleLoop == 2)
 	{
 		transferToServer();
+		goto checkPoint;
 	}
 	else if (choiceIdleLoop == 3)
 	{

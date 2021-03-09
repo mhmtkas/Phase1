@@ -16,7 +16,7 @@ class CashierDb
 
 	public:
 
-		int rc;
+		int rc,valueCount;
 		sqlite3* db;
 		sqlite3_stmt* stmt;
 		char* err;
